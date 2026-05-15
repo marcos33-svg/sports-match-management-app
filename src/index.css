@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+.pro-scorer-splash {
+  isolation: isolate;
+}
+
+.pro-scorer-art {
+  animation: pro-art-reveal 1.8s cubic-bezier(0.2, 0, 0.2, 1) both, pro-art-drift 8s ease-in-out 1.8s infinite;
+  filter: saturate(1.2) contrast(1.1);
+  transform-origin: center;
+}
+
+.pro-scorer-scan {
+  background: rgba(96, 165, 250, 0.06);
+  mix-blend-mode: overlay;
+  opacity: 0;
+  animation: pro-fade-in 1s ease-out 1.5s forwards, pro-scan 4s linear infinite;
+}
+
+.pro-title {
+  animation: pro-title-form 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both, pro-title-glow 3s ease-in-out 1.7s infinite;
+}
+
+.pro-subtitle {
+  animation: pro-fade-in-up 0.8s ease-out 1.2s both;
+}
+
+.pro-info-box {
+  animation: pro-fade-in-up 1s cubic-bezier(0.2, 0.8, 0.2, 1) 1.5s both;
+}
+
+.pro-play-button {
+  animation: pro-fade-in-up 1s cubic-bezier(0.2, 0.8, 0.2, 1) 1.8s both, pro-button-glow 2.5s ease-in-out 3s infinite;
+}
+
+.pro-footer-text {
+  animation: pro-fade-in 1.5s ease-out 2.2s both;
+}
+
+.pro-lightning-thin {
+  position: absolute;
+  width: 1px;
+  height: 50px;
+  background: rgba(147, 197, 253, 0.4);
+  opacity: 0;
+  animation: pro-thunder-thin 5s ease-in-out infinite;
+}
+
+.pro-lightning-thin-one { left: 18%; top: 28%; animation-delay: 0.8s; }
+.pro-lightning-thin-two { right: 22%; top: 32%; height: 65px; animation-delay: 2.2s; }
+.pro-lightning-thin-three { right: 35%; bottom: 35%; height: 40px; animation-delay: 3.6s; }
+
+@keyframes pro-thunder-thin {
+  0%, 92%, 100% { opacity: 0; }
+  94% { opacity: 0.5; }
+  96% { opacity: 0.15; }
+  98% { opacity: 0.35; }
+}
+
+@keyframes pro-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pro-fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pro-art-reveal {
+  0% { opacity: 0; transform: scale(1.1); filter: brightness(0) blur(20px); }
+  100% { opacity: 1; transform: scale(1); filter: brightness(1) blur(0); }
+}
+
+@keyframes pro-art-drift {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-10px) scale(1.03); }
+}
+
+@keyframes pro-title-form {
+  from { opacity: 0; transform: scale(0.8) translateY(-20px); letter-spacing: 0.5em; filter: blur(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); letter-spacing: -0.05em; filter: blur(0); }
+}
+
+@keyframes pro-title-glow {
+  0%, 100% { text-shadow: 0 0 20px rgba(59, 130, 246, 0.6); }
+  50% { text-shadow: 0 0 40px rgba(96, 165, 250, 0.9); }
+}
+
+@keyframes pro-button-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
+}
+
+@keyframes pro-ring-reveal {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes pro-ring-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.6; }
+}
+
+@keyframes pro-scan {
+  from { background-position: 0 0; }
+  to { background-position: 0 100%; }
+}
+
+@keyframes pro-thunder {
+  0%, 90%, 100% { opacity: 0; }
+  92% { opacity: 1; transform: rotate(var(--rotate)) scaleY(1.2); }
+  94% { opacity: 0.2; }
+  96% { opacity: 0.8; }
+}
+
+.pro-scorer-launching .pro-scorer-art {
+  animation: pro-launch 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes pro-launch {
+  to { transform: scale(2.5); opacity: 0; filter: brightness(5) blur(10px); }
+}
