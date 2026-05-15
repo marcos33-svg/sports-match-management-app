@@ -35,7 +35,6 @@ export const savePlayers = (players: PlayerStats[]) => {
 };
 
 export const normalizePlayerName = (name: string) => name.trim().replace(/\s+/g, ' ');
-
 export const normalizeTeamName = (name: string) => name.trim().replace(/\s+/g, ' ').toUpperCase();
 
 export const isValidPlayerName = (name: string): boolean => {
@@ -110,6 +109,31 @@ export const loginPlayerAccount = (name: string): { ok: boolean; message: string
   return { ok: true, message: 'Welcome back.', player };
 };
 
+export const getMatches = (): MatchData[] => {
+  const stored = localStorage.getItem(STORAGE_MATCHES_KEY);
+  if (!stored) return [];
+  try {
+    return JSON.parse(stored);
+  } catch (e) {
+    return [];
+  }
+};
+
+export const saveMatches = (matches: MatchData[]) => {
+  localStorage.setItem(STORAGE_MATCHES_KEY, JSON.stringify(matches));
+};
+
+export const saveMatch = (match: MatchData) => {
+  const matches = getMatches();
+  const index = matches.findIndex(m => m.id === match.id);
+  if (index >= 0) {
+    matches[index] = match;
+  } else {
+    matches.push(match);
+  }
+  saveMatches(matches);
+};
+
 export const getTeams = (): TeamData[] => {
   const stored = localStorage.getItem(STORAGE_TEAMS_KEY);
   if (!stored) return [];
@@ -153,64 +177,6 @@ export const addPlayerToTeamRecord = (playerName: string, teamName: string) => {
   }
 };
 
-export const getMatches = (): MatchData[] => {
-  const stored = localStorage.getItem(STORAGE_MATCHES_KEY);
-  if (!stored) return [];
-  try {
-    return JSON.parse(stored);
-  } catch (e) {
-    return [];
-  }
-};
-
-export const saveMatches = (matches: MatchData[]) => {
-  localStorage.setItem(STORAGE_MATCHES_KEY, JSON.stringify(matches));
-};
-
-export const saveMatch = (match: MatchData) => {
-  const matches = getMatches();
-  const index = matches.findIndex(m => m.id === match.id);
-  if (index >= 0) {
-    matches[index] = match;
-  } else {
-    matches.push(match);
-  }
-  saveMatches(matches);
-};
-
-export const updatePlayerStatsAfterMatch = (
-  name: string,
-  statsDelta: Partial<PlayerStats>
-) => {
-  const players = getPlayers();
-  const index = players.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
-  if (index >= 0) {
-    players[index] = {
-      ...players[index],
-      runs: players[index].runs + (statsDelta.runs || 0),
-      wickets: players[index].wickets + (statsDelta.wickets || 0),
-      ballsPlayed: players[index].ballsPlayed + (statsDelta.ballsPlayed || 0),
-      ballsThrown: players[index].ballsThrown + (statsDelta.ballsThrown || 0),
-      matchPlayed: players[index].matchPlayed + (statsDelta.matchPlayed || 0),
-      fours: players[index].fours + (statsDelta.fours || 0),
-      sixes: players[index].sixes + (statsDelta.sixes || 0),
-    };
-  } else {
-    // If somehow not registered yet
-    players.push({
-      name,
-      runs: statsDelta.runs || 0,
-      wickets: statsDelta.wickets || 0,
-      ballsPlayed: statsDelta.ballsPlayed || 0,
-      ballsThrown: statsDelta.ballsThrown || 0,
-      matchPlayed: statsDelta.matchPlayed || 0,
-      fours: statsDelta.fours || 0,
-      sixes: statsDelta.sixes || 0,
-    });
-  }
-  savePlayers(players);
-};
-
 export const assignMatchToPlayersAndTeams = (match: MatchData) => {
   const teamNames = [normalizeTeamName(match.teamA), normalizeTeamName(match.teamB)];
   const playerNames = [...match.teamAPlayers, ...match.teamBPlayers].map(normalizePlayerName);
@@ -236,8 +202,40 @@ export const assignMatchToPlayersAndTeams = (match: MatchData) => {
   savePlayers(players);
 };
 
+export const updatePlayerStatsAfterMatch = (
+  name: string,
+  statsDelta: Partial<PlayerStats>
+) => {
+  const players = getPlayers();
+  const index = players.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
+  if (index >= 0) {
+    players[index] = {
+      ...players[index],
+      runs: players[index].runs + (statsDelta.runs || 0),
+      wickets: players[index].wickets + (statsDelta.wickets || 0),
+      ballsPlayed: players[index].ballsPlayed + (statsDelta.ballsPlayed || 0),
+      ballsThrown: players[index].ballsThrown + (statsDelta.ballsThrown || 0),
+      matchPlayed: players[index].matchPlayed + (statsDelta.matchPlayed || 0),
+      fours: players[index].fours + (statsDelta.fours || 0),
+      sixes: players[index].sixes + (statsDelta.sixes || 0),
+    };
+  } else {
+    players.push({
+      name,
+      runs: statsDelta.runs || 0,
+      wickets: statsDelta.wickets || 0,
+      ballsPlayed: statsDelta.ballsPlayed || 0,
+      ballsThrown: statsDelta.ballsThrown || 0,
+      matchPlayed: statsDelta.matchPlayed || 0,
+      fours: statsDelta.fours || 0,
+      sixes: statsDelta.sixes || 0,
+    });
+  }
+  savePlayers(players);
+};
+
 export const generateMatchCredentials = (): { id: string; password: string } => {
-  const digits = Math.floor(10000000 + Math.random() * 90000000).toString(); // 8 digits
+  const digits = Math.floor(10000000 + Math.random() * 90000000).toString();
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let password = '';
   for (let i = 0; i < 6; i++) {
