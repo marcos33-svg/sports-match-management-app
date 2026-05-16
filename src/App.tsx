@@ -1,3 +1,22 @@
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "./firebase";
+
+const addPlayer = async () => {
+  try {
+    await addDoc(collection(db, "players"), {
+      name: "Meet",
+      score: 100,
+      createdAt: new Date(),
+    });
+
+    alert("Data Stored!");
+  } catch (error) {
+    console.error(error);
+  }
+};
+<button onClick={addPlayer}>
+  Add Player
+</button>
 import React, { useState, useEffect } from 'react';
 import { 
   Play, Users, BarChart3, Home, ArrowLeft, ArrowRight, 
